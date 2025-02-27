@@ -88,6 +88,20 @@ supabase functions deploy submit-score
 supabase db push
 ```
 
+## Deployment
+
+This game is deployed on GitHub Pages and can be accessed at:
+
+[https://dpereda.github.io/Bubble_pop/](https://dpereda.github.io/Bubble_pop/)
+
+### Deploying Your Own Version
+
+1. Fork this repository
+2. Enable GitHub Pages in your repository settings
+3. Your game will be available at `https://[your-username].github.io/Bubble_pop/`
+
+Remember to update the Supabase configuration in `js/config.js` with your own Supabase project details.
+
 ## License
 
 This project is open source and available under the MIT License.
