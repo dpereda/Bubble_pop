@@ -98,7 +98,7 @@ class BubblePopGame {
         }
     }
 
-    async submitScore() {
+    submitScore() {
         const playerName = document.getElementById('player-name').value.trim();
         const playerEmail = document.getElementById('player-email').value.trim();
         
@@ -117,50 +117,45 @@ class BubblePopGame {
         submitButton.disabled = true;
         submitButton.textContent = 'Submitting...';
         
-        try {
-            const success = await db.submitScore(playerName, playerEmail, this.score);
-            
-            if (success) {
-                document.getElementById('leaderboard-form').innerHTML = '<p>Score submitted successfully!</p>';
-                this.updateLeaderboard();
-            } else {
-                throw new Error('Failed to submit score');
-            }
-        } catch (error) {
-            console.error('Error in submitScore:', error);
-            submitButton.disabled = false;
-            submitButton.textContent = 'Submit Score';
-            alert('Failed to submit score. Please try again.');
-        }
+        db.submitScore(playerName, playerEmail, this.score)
+            .then(success => {
+                if (success) {
+                    document.getElementById('leaderboard-form').innerHTML = '<p>Score submitted successfully!</p>';
+                    this.updateLeaderboard();
+                } else {
+                    throw new Error('Failed to submit score');
+                }
+            })
+            .catch(error => {
+                console.error('Error in submitScore:', error);
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Score';
+                alert('Failed to submit score. Please try again.');
+            });
     }
 
-    async updateLeaderboard() {
+    updateLeaderboard() {
         const leaderboardList = document.getElementById('leaderboard-list');
         leaderboardList.innerHTML = '<p>Loading leaderboard...</p>';
         
-        try {
-            const scores = await db.getTopScores();
-            
-            if (scores.length === 0) {
-                leaderboardList.innerHTML = '<p>No scores yet. Be the first!</p>';
-                return;
-            }
-            
-            leaderboardList.innerHTML = '';
-            scores.forEach((entry, index) => {
-                const item = document.createElement('div');
-                item.className = 'leaderboard-item';
-                item.innerHTML = `
-                    <span class="rank">#${index + 1}</span>
-                    <span class="player-name">${entry.player_name}</span>
-                    <span class="player-score">${entry.score}</span>
-                `;
-                leaderboardList.appendChild(item);
+        db.getTopScores(10)
+            .then(scores => {
+                if (scores && scores.length > 0) {
+                    leaderboardList.innerHTML = '';
+                    
+                    scores.forEach(entry => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${entry.player_name}: ${entry.score}`;
+                        leaderboardList.appendChild(listItem);
+                    });
+                } else {
+                    leaderboardList.innerHTML = '<p>No scores yet. Be the first!</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching leaderboard:', error);
+                leaderboardList.innerHTML = '<p>Error loading leaderboard</p>';
             });
-        } catch (error) {
-            console.error('Error in updateLeaderboard:', error);
-            leaderboardList.innerHTML = '<p>Failed to load leaderboard. Please try again later.</p>';
-        }
     }
 
     update() {
