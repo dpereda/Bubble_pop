@@ -39,6 +39,12 @@ class Database {
                 }
             }
 
+            // Check if Supabase is configured
+            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+                console.log('Supabase not configured. Please update config.js with your Supabase credentials.');
+                return false;
+            }
+
             // First try using the RPC function
             try {
                 console.log('Attempting to use RPC function for score submission...');
@@ -99,6 +105,18 @@ class Database {
                     console.error('Failed to initialize Supabase client');
                     return [];
                 }
+            }
+
+            // Check if Supabase is configured
+            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+                console.log('Supabase not configured. Please update config.js with your Supabase credentials.');
+                return [
+                    { player_name: 'Example Player 1', score: 1250 },
+                    { player_name: 'Example Player 2', score: 980 },
+                    { player_name: 'Example Player 3', score: 840 },
+                    { player_name: 'Example Player 4', score: 720 },
+                    { player_name: 'Example Player 5', score: 650 }
+                ];
             }
 
             // First try using the RPC function

@@ -1,6 +1,7 @@
 // Supabase configuration
-const SUPABASE_URL = 'https://zealxibrgczdioidplmm.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplYWx4aWJyZ2N6ZGlvaWRwbG1tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA2ODQzMzgsImV4cCI6MjA1NjI2MDMzOH0.vIfBz23AuKqk6CaNRP1YePdCtoE-lpZCPnIn3Gj8xJw';
+// Replace with your own Supabase URL and anon key
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
 // Game configuration
 const GAME_CONFIG = {
