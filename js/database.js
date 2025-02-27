@@ -8,6 +8,8 @@ class Database {
 
     async initialize() {
         console.log('Initializing Supabase client...');
+        console.log('SUPABASE_URL in database.js:', SUPABASE_URL);
+        console.log('SUPABASE_KEY in database.js (first 10 chars):', SUPABASE_KEY.substring(0, 10) + '...');
         
         try {
             // Check if Supabase is configured with real credentials

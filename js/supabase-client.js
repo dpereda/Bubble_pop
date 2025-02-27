@@ -2,6 +2,8 @@
 const createSupabaseClient = () => {
     try {
         console.log('Creating Supabase client...');
+        console.log('SUPABASE_URL:', SUPABASE_URL);
+        console.log('SUPABASE_KEY (first 10 chars):', SUPABASE_KEY.substring(0, 10) + '...');
         
         // Check if Supabase is configured
         if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
