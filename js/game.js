@@ -43,6 +43,30 @@ class BubblePopGame {
         // Initialize database
         db.initialize().then(success => {
             console.log('Database initialization result:', success);
+            
+            // Update UI if Supabase is not configured
+            if (!db.supabaseConfigured) {
+                // Add a notice to the game over screen
+                const leaderboardContainer = document.getElementById('leaderboard-container');
+                if (leaderboardContainer) {
+                    const notice = document.createElement('div');
+                    notice.className = 'supabase-notice';
+                    notice.innerHTML = '<p>⚠️ Leaderboard functionality is limited because Supabase is not configured.</p>';
+                    leaderboardContainer.prepend(notice);
+                }
+                
+                // Add a notice to the score submission form
+                const leaderboardForm = document.getElementById('leaderboard-form');
+                if (leaderboardForm) {
+                    const notice = document.createElement('div');
+                    notice.className = 'supabase-notice';
+                    notice.innerHTML = '<p>⚠️ Score submission is disabled because Supabase is not configured.</p>';
+                    leaderboardForm.prepend(notice);
+                }
+            }
+            
+            // Load the leaderboard
+            this.updateLeaderboard();
         }).catch(error => {
             console.error('Error during database initialization:', error);
         });

@@ -2,6 +2,7 @@ class Database {
     constructor() {
         this.supabase = null;
         this.initialized = false;
+        this.supabaseConfigured = true;
         console.log('Database class instantiated');
     }
 
@@ -9,12 +10,22 @@ class Database {
         console.log('Initializing Supabase client...');
         
         try {
+            // Check if Supabase is configured with real credentials
+            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+                console.log('Supabase not configured. Leaderboard functionality will be disabled.');
+                this.supabaseConfigured = false;
+                this.initialized = true;
+                return true; // Return true to indicate initialization completed successfully
+            }
+            
             // Create the client using our helper function
             this.supabase = createSupabaseClient();
             
             if (!this.supabase) {
-                console.error('Failed to create Supabase client');
-                return false;
+                console.log('Failed to create Supabase client. Leaderboard functionality will be disabled.');
+                this.supabaseConfigured = false;
+                this.initialized = true;
+                return true; // Return true to indicate initialization completed successfully
             }
             
             this.initialized = true;
@@ -22,7 +33,9 @@ class Database {
             return true;
         } catch (error) {
             console.error('Error initializing Supabase client:', error);
-            return false;
+            this.supabaseConfigured = false;
+            this.initialized = true;
+            return true; // Return true to indicate initialization completed successfully
         }
     }
 
@@ -39,9 +52,8 @@ class Database {
                 }
             }
 
-            // Check if Supabase is configured
-            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
-                console.log('Supabase not configured. Please update config.js with your Supabase credentials.');
+            if (!this.supabaseConfigured) {
+                console.log('Supabase not configured, skipping score submission.');
                 return false;
             }
 
@@ -107,9 +119,8 @@ class Database {
                 }
             }
 
-            // Check if Supabase is configured
-            if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
-                console.log('Supabase not configured. Please update config.js with your Supabase credentials.');
+            if (!this.supabaseConfigured) {
+                console.log('Supabase not configured, returning mock leaderboard data.');
                 return [
                     { player_name: 'Example Player 1', score: 1250 },
                     { player_name: 'Example Player 2', score: 980 },
