@@ -3,20 +3,28 @@ let game;
 
 // p5.js setup function
 function setup() {
-    // Create game instance
-    game = new BubblePopGame();
-    game.setup();
+    try {
+        // Create game instance
+        game = new BubblePopGame();
+        game.setup();
+    } catch (error) {
+        console.error('Error setting up game:', error);
+    }
 }
 
 // p5.js draw function
 function draw() {
-    game.update();
-    game.draw();
+    if (game) {
+        game.update();
+        game.draw();
+    }
 }
 
 // p5.js mousePressed function
 function mousePressed() {
-    game.mousePressed();
+    if (game) {
+        game.mousePressed();
+    }
 }
 
 // Add window resize handler

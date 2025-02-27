@@ -2,6 +2,21 @@
 const createSupabaseClient = () => {
     try {
         console.log('Creating Supabase client...');
+        
+        // Check if Supabase is configured
+        if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+            console.warn('Supabase not configured. Please update config.js with your Supabase credentials.');
+            return null;
+        }
+        
+        // Validate URL format
+        try {
+            new URL(SUPABASE_URL); // This will throw if URL is invalid
+        } catch (urlError) {
+            console.error('Invalid Supabase URL format:', urlError);
+            return null;
+        }
+        
         console.log('URL:', SUPABASE_URL);
         console.log('Key length:', SUPABASE_KEY.length);
         
