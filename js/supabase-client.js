@@ -30,6 +30,22 @@ const createSupabaseClient = () => {
             throw new Error('Failed to create client');
         }
         
+        // Test CORS configuration
+        client.from('leaderboard').select('count').limit(1)
+            .then(response => {
+                if (response.error) {
+                    console.error('CORS or API error:', response.error);
+                    if (response.error.message.includes('CORS')) {
+                        console.error('CORS error detected. Make sure your Supabase project has the correct CORS configuration.');
+                    }
+                } else {
+                    console.log('Supabase API test successful');
+                }
+            })
+            .catch(error => {
+                console.error('Error testing Supabase API:', error);
+            });
+        
         console.log('Supabase client created successfully');
         return client;
     } catch (error) {
