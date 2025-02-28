@@ -1,5 +1,7 @@
 class BubblePopGame {
-    constructor() {
+    constructor(p5Instance) {
+        this.p5 = p5Instance;
+        this.db = new Database();
         this.bubbles = [];
         this.particles = [];
         this.score = 0;
@@ -25,6 +27,7 @@ class BubblePopGame {
         this.endGame = this.endGame.bind(this);
         this.resetGame = this.resetGame.bind(this);
         this.submitScore = this.submitScore.bind(this);
+        this.updateLeaderboard = this.updateLeaderboard.bind(this);
         
         // Setup event listeners
         document.getElementById('start-button').addEventListener('click', this.startGame);
@@ -122,40 +125,79 @@ class BubblePopGame {
         }
     }
 
-    submitScore() {
-        const playerName = document.getElementById('player-name').value.trim();
-        const playerEmail = document.getElementById('player-email').value.trim();
+    async submitScore() {
+        if (this.gameState !== 'ended') {
+            console.log('Cannot submit score: game is not ended');
+            return;
+        }
+
+        // Get player information from the form
+        const playerNameInput = document.getElementById('player-name');
+        const playerEmailInput = document.getElementById('player-email');
         
-        if (!playerName || !playerEmail) {
-            alert('Please enter your name and email');
+        if (!playerNameInput || !playerEmailInput) {
+            console.error('Player input fields not found');
             return;
         }
         
+        const playerName = playerNameInput.value.trim();
+        const playerEmail = playerEmailInput.value.trim();
+        
+        if (!playerName) {
+            alert('Please enter your name');
+            return;
+        }
+        
+        if (!playerEmail) {
+            alert('Please enter your email');
+            return;
+        }
+        
+        // Simple email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(playerEmail)) {
             alert('Please enter a valid email address');
             return;
         }
         
+        // Disable the submit button to prevent multiple submissions
         const submitButton = document.getElementById('submit-score');
-        submitButton.disabled = true;
-        submitButton.textContent = 'Submitting...';
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+        }
         
-        db.submitScore(playerName, playerEmail, this.score)
-            .then(success => {
-                if (success) {
-                    document.getElementById('leaderboard-form').innerHTML = '<p>Score submitted successfully!</p>';
-                    this.updateLeaderboard();
-                } else {
-                    throw new Error('Failed to submit score');
-                }
-            })
-            .catch(error => {
-                console.error('Error in submitScore:', error);
+        try {
+            // Submit the score to the database
+            const scoreData = {
+                playerName: playerName,
+                playerEmail: playerEmail,
+                score: this.score
+            };
+            
+            await this.db.submitScore(scoreData);
+            
+            // Show success message
+            alert('Score submitted successfully!');
+            
+            // Hide the form and show the leaderboard
+            const scoreForm = document.getElementById('leaderboard-form');
+            if (scoreForm) {
+                scoreForm.style.display = 'none';
+            }
+            
+            // Update the leaderboard
+            await this.updateLeaderboard();
+        } catch (error) {
+            console.error('Error in submitScore:', error);
+            alert('Failed to submit score. Please try again.');
+        } finally {
+            // Re-enable the submit button
+            if (submitButton) {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Submit Score';
-                alert('Failed to submit score. Please try again.');
-            });
+            }
+        }
     }
 
     updateLeaderboard() {
