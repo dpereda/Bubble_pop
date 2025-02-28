@@ -30,13 +30,19 @@ const createSupabaseClient = () => {
             throw new Error('Failed to create client');
         }
         
-        // Test CORS configuration
+        // Test CORS configuration and API key
+        console.log('Testing Supabase connection...');
         client.from('leaderboard').select('count').limit(1)
             .then(response => {
                 if (response.error) {
-                    console.error('CORS or API error:', response.error);
+                    console.error('Supabase API error:', response.error);
                     if (response.error.message.includes('CORS')) {
                         console.error('CORS error detected. Make sure your Supabase project has the correct CORS configuration.');
+                        console.error('See CORS_SETUP.md for instructions on configuring CORS.');
+                    } else if (response.error.message.includes('Invalid API key')) {
+                        console.error('Invalid API key. Please check your Supabase anon key in config.js.');
+                        console.error('Go to your Supabase dashboard > Project Settings > API > Project API keys > anon public');
+                        console.error('Copy the "anon public" key and update the SUPABASE_KEY in config.js');
                     }
                 } else {
                     console.log('Supabase API test successful');
