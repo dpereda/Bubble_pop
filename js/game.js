@@ -182,7 +182,7 @@ class BubblePopGame {
             };
             
             console.log('Submitting score data:', scoreData);
-            const result = await this.db.submitScore(scoreData);
+            const result = await this.db.submitScore({ ...scoreData });
             
             if (result) {
                 // Show success message
