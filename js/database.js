@@ -57,37 +57,59 @@ class Database {
                 return false;
             }
 
-            // Skip RPC function and go directly to insert
-            console.log('Attempting direct table insert...');
-            console.log('Submitting score for', playerName, playerEmail, score);
-            
-            // Enable RLS bypass using service role key if available
-            const { data, error } = await this.supabase
-                .from('leaderboard')
-                .insert([
-                    { 
-                        player_name: playerName, 
-                        player_email: playerEmail, 
-                        score: score
-                    }
-                ])
-                .select();
-
-            if (error) {
-                console.error('Direct insert error:', error);
+            // First try using the RPC function
+            try {
+                console.log('Attempting to use RPC function for score submission...');
                 
-                // If it's an RLS error, we need to inform the user
-                if (error.code === '42501') {
-                    console.error('Row-level security policy error. Please check your Supabase settings.');
-                    console.error('You may need to disable RLS for the leaderboard table or create an appropriate policy.');
-                    alert('Unable to submit score due to security restrictions. Please contact the administrator.');
+                // Use parameter names with p_ prefix to match the existing function
+                const rpcParams = {
+                    p_player_name: playerName,
+                    p_player_email: playerEmail,
+                    p_score: score
+                };
+                
+                console.log('Calling RPC with parameters:', rpcParams);
+                const { data, error } = await this.supabase.rpc('submit_score', rpcParams);
+
+                if (error) {
+                    console.warn('RPC function failed, will try direct insert:', error);
+                    throw error; // This will be caught by the try/catch below
                 }
-                
-                throw error;
-            }
 
-            console.log('Score submitted successfully via direct insert', data);
-            return true;
+                console.log('Score submitted successfully via RPC:', data);
+                return true;
+            } catch (rpcError) {
+                // If RPC fails, try direct insert as fallback
+                console.log('Falling back to direct table insert...');
+                console.log('Submitting score for', playerName, playerEmail, score);
+                
+                const { data, error } = await this.supabase
+                    .from('leaderboard')
+                    .insert([
+                        { 
+                            player_name: playerName, 
+                            player_email: playerEmail, 
+                            score: score
+                        }
+                    ])
+                    .select();
+
+                if (error) {
+                    console.error('Direct insert error:', error);
+                    
+                    // If it's an RLS error, we need to inform the user
+                    if (error.code === '42501') {
+                        console.error('Row-level security policy error. Please check your Supabase settings.');
+                        console.error('You may need to disable RLS for the leaderboard table or create an appropriate policy.');
+                        alert('Unable to submit score due to security restrictions. Please contact the administrator.');
+                    }
+                    
+                    throw error;
+                }
+
+                console.log('Score submitted successfully via direct insert', data);
+                return true;
+            }
         } catch (error) {
             console.error('Error submitting score:', error);
             return false;
