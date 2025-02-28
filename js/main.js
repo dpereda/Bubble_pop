@@ -4,8 +4,8 @@ let game;
 // p5.js setup function
 function setup() {
     try {
-        // Create game instance
-        game = new BubblePopGame();
+        // Create game instance with the p5 instance
+        game = new BubblePopGame(window);
         if (game) {
             game.setup();
         }

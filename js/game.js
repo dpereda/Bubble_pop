@@ -1,6 +1,6 @@
 class BubblePopGame {
-    constructor(p5Instance) {
-        this.p5 = p5Instance;
+    constructor(p5Instance = null) {
+        this.p5 = p5Instance || window;
         this.db = new Database();
         this.bubbles = [];
         this.particles = [];
@@ -96,6 +96,7 @@ class BubblePopGame {
     }
 
     endGame() {
+        console.log('endGame called, setting gameState to ended');
         this.isGameRunning = false;
         this.gameState = 'ended';
         clearInterval(this.timerInterval);
@@ -130,6 +131,7 @@ class BubblePopGame {
     }
 
     async submitScore() {
+        console.log('submitScore called, current gameState:', this.gameState);
         if (this.gameState !== 'ended') {
             console.log('Cannot submit score: game is not ended');
             return;
