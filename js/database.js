@@ -62,9 +62,10 @@ class Database {
             // First try using the RPC function
             try {
                 console.log('Attempting to use RPC function for score submission...');
+                // The hint suggests the correct parameter order is (p_player_email, p_player_name, p_score)
                 const { data, error } = await this.supabase.rpc('submit_score', {
-                    p_player_name: playerName,
                     p_player_email: playerEmail,
+                    p_player_name: playerName,
                     p_score: score
                 });
 
@@ -83,14 +84,19 @@ class Database {
             } catch (rpcError) {
                 // If RPC fails, try direct insert as fallback
                 console.log('Falling back to direct table insert...');
+                
+                // For RLS policies, we need to make sure we're using the correct format
+                // and that the policy allows anonymous inserts
+                console.log('Attempting direct insert with player_name:', playerName, 'player_email:', playerEmail, 'score:', score);
+                
                 const { data, error } = await this.supabase
                     .from('leaderboard')
                     .insert([
                         { 
                             player_name: playerName, 
                             player_email: playerEmail, 
-                            score: score,
-                            created_at: new Date().toISOString()
+                            score: score
+                            // Let Supabase handle the created_at timestamp with default value
                         }
                     ]);
 

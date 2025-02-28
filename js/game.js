@@ -181,19 +181,24 @@ class BubblePopGame {
                 score: this.score
             };
             
-            await this.db.submitScore(scoreData);
+            console.log('Submitting score data:', scoreData);
+            const result = await this.db.submitScore(scoreData);
             
-            // Show success message
-            alert('Score submitted successfully!');
-            
-            // Hide the form and show the leaderboard
-            const scoreForm = document.getElementById('leaderboard-form');
-            if (scoreForm) {
-                scoreForm.style.display = 'none';
+            if (result) {
+                // Show success message
+                alert('Score submitted successfully!');
+                
+                // Hide the form and show the leaderboard
+                const scoreForm = document.getElementById('leaderboard-form');
+                if (scoreForm) {
+                    scoreForm.style.display = 'none';
+                }
+                
+                // Update the leaderboard
+                await this.updateLeaderboard();
+            } else {
+                throw new Error('Failed to submit score');
             }
-            
-            // Update the leaderboard
-            await this.updateLeaderboard();
         } catch (error) {
             console.error('Error in submitScore:', error);
             alert('Failed to submit score. Please try again.');
