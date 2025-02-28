@@ -126,8 +126,8 @@ class BubblePopGame {
     }
 
     async submitScore() {
-        if (this.gameState !== 'ended') {
-            console.log('Cannot submit score: game is not ended');
+        if (this.isGameRunning) {
+            console.log('Cannot submit score: game is still running');
             return;
         }
 
