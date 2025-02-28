@@ -7,6 +7,7 @@ class BubblePopGame {
         this.score = 0;
         this.timeLeft = GAME_CONFIG.gameDuration;
         this.isGameRunning = false;
+        this.gameState = 'waiting'; // waiting, playing, ended
         this.lastBubblePopped = 0;
         this.comboCount = 0;
         
@@ -78,6 +79,7 @@ class BubblePopGame {
     startGame() {
         this.resetGame();
         this.isGameRunning = true;
+        this.gameState = 'playing';
         this.startScreen.classList.add('hidden');
         this.gameOverScreen.classList.add('hidden');
         this.gameUI.style.display = 'flex';
@@ -95,6 +97,7 @@ class BubblePopGame {
 
     endGame() {
         this.isGameRunning = false;
+        this.gameState = 'ended';
         clearInterval(this.timerInterval);
         
         // Update final score
@@ -114,6 +117,7 @@ class BubblePopGame {
         this.score = 0;
         this.timeLeft = GAME_CONFIG.gameDuration;
         this.comboCount = 0;
+        this.gameState = 'waiting';
         
         // Update UI
         this.scoreElement.textContent = this.score;
@@ -126,8 +130,8 @@ class BubblePopGame {
     }
 
     async submitScore() {
-        if (this.isGameRunning) {
-            console.log('Cannot submit score: game is still running');
+        if (this.gameState !== 'ended') {
+            console.log('Cannot submit score: game is not ended');
             return;
         }
 
