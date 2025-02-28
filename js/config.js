@@ -4,7 +4,7 @@ const SUPABASE_URL = 'https://zealxibrgczdioidplmm.supabase.co';
 
 // TODO: Replace this with your actual anon key from the Supabase dashboard
 // Go to: Project Settings > API > Project API keys > anon public
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplYWx4aWJyZ2N6ZGlvaWRwbG1tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk1OTk4MzYsImV4cCI6MjAyNTE3NTgzNn0.mVBG9fVaRcIxpMNnT1Yi0P-0JwUzQWO8_aNLCJV28lU';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplYWx4aWJyZ2N6ZGlvaWRwbG1tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA2ODQzMzgsImV4cCI6MjA1NjI2MDMzOH0.vIfBz23AuKqk6CaNRP1YePdCtoE-lpZCPnIn3Gj8xJw';
 
 // Game configuration
 const GAME_CONFIG = {
